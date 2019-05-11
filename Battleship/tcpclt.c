@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
 {
 
    /* Deklaráció */
-    int serverSocket; // fd
-    int playerSocket1; // fdc
+    int serverSocket; /* fd */
+    int playerSocket1; /* fdc */
     int playerSocket2;
     
     
