@@ -10,7 +10,7 @@
 
 #define BUFSIZE 1024
 #define PORT_NO 2001
-#define error(a,b) fprintf(stderr, a, b)  // error 'function'
+#define error(a,b) fprintf(stderr, a, b)
 
 int main(int argc, char *argv[] ){
 
@@ -43,14 +43,15 @@ int main(int argc, char *argv[] ){
    server.sin_port        = htons(PORT_NO);
     
     server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    server.sin_port = htons(2001);
+    server.sin_port = htons(PORT_NO);
 
    /* Socket létrehozása */
    serverSocket = socket(AF_INET, SOCK_STREAM, 0 );
-   if (serverSocket < 0) {
+   if (serverSocket < 0)
+   {
       error("%s: Nem sikerült létrehozni a socketet!\n",argv[0]);
       exit(1);
-      }
+   }
 
    /* Socket beállítása */
    setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof on);
@@ -58,38 +59,46 @@ int main(int argc, char *argv[] ){
 
    /* Socket bindelése */
    err = bind(serverSocket, (struct sockaddr *) &server, server_size);
-   if (err < 0) {
+   if (err < 0)
+   {
       error("%s: Nem sikerült bebindelni a socketet!\n",argv[0]);
       exit(2);
-      }
+   }
 
    /* Várakozás */
    err = listen(serverSocket, 10);
-   if (err < 0) {
+   if (err < 0)
+   {
       error("%s: Sikertelen várakozás!\n",argv[0]);
       exit(3);
-      }
+   }
 
    /* Csatlakozás elfogadása */
    playerSocket1 = accept(serverSocket, (struct sockaddr *) &client, &client_size);
-   if (playerSocket1 < 0) {
+   if (playerSocket1 < 0)
+   {
       error("%s: Nem sikerült csatlakozni a sockethez !\n",argv[0]);
       exit(4);
-      }
+   }
 
    /* Klienstől való adat fogadása */
-   rcvsize = recv( playerSocket1, buffer, bytes, flags );
-   if (rcvsize < 0) {
+    while (1)
+    {
+    rcvsize=0;
+    rcvsize = recv( playerSocket1, buffer, bytes, flags );
+   if (rcvsize < 0)
+   {
       error("%s: Nem sikerült adatot fogadni a klienstől!\n",argv[0]);
       exit(5);
-      }
+   }
 
    /* Felhasználói felület */
    printf("%i byte lett fogadva a klienstől\n Üzenet: %s \n",
            rcvsize-1, buffer);
-
-   /* Sending acknowledgement to the client */
-   sprintf(buffer,"Adatok átadása rendben!");
+        if (strcmp(buffer, "exit"))
+            break;
+   /* Nyugtázás küldése a kliensnek */
+   //sprintf(buffer,"Adatok átadása rendben!");
    bytes = strlen(buffer) + 1;
    trnmsize = send(playerSocket1, buffer, bytes, flags);
    if (trnmsize < 0) {
@@ -98,10 +107,12 @@ int main(int argc, char *argv[] ){
       }
 
    /* Felhasználói felület */
-   printf ("Acknowledgement has been sent to the client.\n");
-
+        printf ("Sikeres nyugtázás küldése a kliensnek!\n");
+        buffer[0]=0;
+      }
    /* Socketek bezárása és kilépés */
    close(playerSocket1);
    close(playerSocket2);
    exit(0);
-} 
+
+}
