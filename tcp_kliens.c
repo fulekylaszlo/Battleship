@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
    server.sin_port        = htons(PORT_NO);
     
     server.sin_addr.s_addr= inet_addr("127.0.0.1");
-    server.sin_port = htons(2001);
+    server.sin_port = htons(PORT_NO);
    
    /* Felhasználói felület */
    printf(" Üzenet: ");
@@ -57,7 +57,8 @@ int main(int argc, char *argv[])
 
    /* Socket létrehozása */
    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-   if (serverSocket < 0) {
+   if (serverSocket < 0)
+   {
       error("%s: Nem sikerült létrehozni a socketet!\n",argv[0]);
       exit(1);
    }
@@ -68,34 +69,39 @@ int main(int argc, char *argv[])
 
    /* Csatlakozás a szerverhez */
    err = connect(serverSocket, (struct sockaddr *) &server, server_size);
-   if (err < 0) {
+   if (err < 0)
+   {
       error("%s: Nem sikerült bebindelni a socketet!\n", argv[0]);
       exit(2);
    }
-
+ while (1)
+ {
    /* Adat küldése a szerver felé*/
    trnmsize = send(serverSocket, buffer, bytes, flags);
-   if (trnmsize < 0) {
+   if (trnmsize < 0)
+   {
       error("%s: Nem sikerült adatot küldeni a szerver felé!\n", argv[0]);
       exit(3);
    }
 
    /* Felhasználói felület */
-   printf("%i Sikeresen felcsatlakozott a játékos!\n", trnmsize-1);
+   printf(" Sikeresen felcsatlakozott a játékos!\n");
 
    /* Szervertől való adatok fogadása */
    rcvsize = recv( serverSocket, buffer, bytes, flags );
-   if (rcvsize < 0) {
+   if (rcvsize < 0)
+   {
       error("%s: Nem sikerült adatot fogadni a szervertől!\n", argv[0]);
       exit(4);
    }
 
    /* Felhasználói felület */
    if (strcmp(buffer, "Adatok átadása rendben!"))
-      printf("Acknowledgement has been received from server.\n");
+      printf("Sikeres nyugtázás fogadása a szervertől!\n");
    else
-      printf("Acknowledgement error.");
-
+      printf("Nyugtázási hiba!");
+     scanf("%s",buffer);
+ }
    /* Socketek bezárása és kilépés */
    close(serverSocket);
    exit(0);
