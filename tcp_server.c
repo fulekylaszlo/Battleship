@@ -6,31 +6,33 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include <netinet/in.h> 
+#include <netinet/in.h>
 
 #define BUFSIZE 1024
 #define PORT_NO 2001
 #define error(a,b) fprintf(stderr, a, b)
 
-int main(int argc, char *argv[] ){
+int main(int argc, char *argv[] )
 
-   /* Deklaráció */
+{
+
+    /* Deklaráció */
     int serverSocket; /* fd */
     int playerSocket1; /* fdc */
     int playerSocket2;
     
 
-   int flags;
-   struct sockaddr_in server;
-   struct sockaddr_in client;
-   int server_size;
-   int client_size;
-   int bytes;
-   int rcvsize;
-   int trnmsize;
-   int err;
-   char on;
-   char buffer[BUFSIZE+1];
+    int flags;
+    struct sockaddr_in server;
+    struct sockaddr_in client;
+    int server_size;
+    int client_size;
+    int bytes;
+    int rcvsize;
+    int trnmsize;
+    int err;
+    char on;
+    char buffer[BUFSIZE+1];
 
    /* Inicializáció */
    on                     = 1;
@@ -86,33 +88,34 @@ int main(int argc, char *argv[] ){
     {
     rcvsize=0;
     rcvsize = recv( playerSocket1, buffer, bytes, flags );
-   if (rcvsize < 0)
-   {
-      error("%s: Nem sikerült adatot fogadni a klienstől!\n",argv[0]);
-      exit(5);
-   }
+        if (rcvsize < 0)
+        {
+            error("%s: Nem sikerült adatot fogadni a klienstől!\n",argv[0]);
+            exit(5);
+        }
 
    /* Felhasználói felület */
-   printf("%i byte lett fogadva a klienstől\n Üzenet: %s \n",
+        printf("%i byte lett fogadva a klienstől\n Üzenet: %s \n",
            rcvsize-1, buffer);
-        if (strcmp(buffer, "exit"))
-            break;
+        if (strcmp(buffer, "kilépés"))
    /* Nyugtázás küldése a kliensnek */
-   //sprintf(buffer,"Adatok átadása rendben!");
-   bytes = strlen(buffer) + 1;
-   trnmsize = send(playerSocket1, buffer, bytes, flags);
-   if (trnmsize < 0) {
-      error("%s: Nem sikerült adatot küldeni a kliensnek!\n",argv[0]);
-      exit(6);
-      }
+        sprintf(buffer,"Adatok átadása rendben!");
+        bytes = strlen(buffer) + 1;
+        trnmsize = send(playerSocket1, buffer, bytes, flags);
+        if (trnmsize < 0)
+        {
+            error("%s: Nem sikerült adatot küldeni a kliensnek!\n",argv[0]);
+            exit(6);
+        }
 
    /* Felhasználói felület */
         printf ("Sikeres nyugtázás küldése a kliensnek!\n");
-        buffer[0]=0;
-      }
+        buffer[rcvsize-1]='\0';
+    }
    /* Socketek bezárása és kilépés */
-   close(playerSocket1);
-   close(playerSocket2);
+    close(playerSocket1);
+    close(playerSocket2);
+    close(serverSocket);
    exit(0);
 
 }
