@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     /* Felhasználói felület */
     printf(" Üzenet: ");
     scanf("%s",buffer);
-    bytes = strlen(buffer)+1;
+    bytes = strlen(buffer)+1; 
 
     /* Socket létrehozása */
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
