@@ -10,4 +10,4 @@ A small game for my "Hálózati Architektúrák És Protokollok" class
 
 3.Dékány Róbert: https://github.com/teaisawesome
 
-# Mégegyszer hatalmas köszönet, hogy képesek voltak hajnalban segíteni nekem ! Örök hálám ! :)
+# Mégegyszer hatalmas köszönet, hogy képesek voltak hajnalban segíteni nekem ! Örök hálám ! <3
